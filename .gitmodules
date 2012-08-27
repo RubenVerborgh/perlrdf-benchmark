@@ -1,0 +1,3 @@
+[submodule "perlrdf"]
+	path = perlrdf
+	url = git://github.com/kasei/perlrdf.git
