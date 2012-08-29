@@ -3,12 +3,14 @@ use warnings;
 
 use autodie;
 use Benchmark qw(:all);
+use Error qw(:try);
 
 my $dbpedia_downloads_uri = 'http://downloads.dbpedia.org/3.8/en/';
 
 sub benchmark_parser {
   my $parser = shift;
   my $test_filename = shift;
+  my $limit = shift;
 
   # Fetch the test file if it doesn't exist
   my $tmp_dir = "$Bin/../tmp/";
@@ -27,12 +29,16 @@ sub benchmark_parser {
   open $file, $test_file;
 
   # Parse test file
+  my $total = 0;
   my $result = timeit(1, sub {
-    my $total = 0;
-    $parser->parse_file(undef, $file, sub {
-      print ++$total, "\n";
-    });
+    try {
+      $parser->parse_file(undef, $file, sub {
+        print ++$total, "\n";
+        throw Error::Simple if $limit and $total >= $limit;
+      });
+    }
+    catch Error::Simple with { }
   });
 
-  print "Parsing took", timestr($result), "\n";
+  print "Parsing $total statements took", timestr($result), "\n";
 }

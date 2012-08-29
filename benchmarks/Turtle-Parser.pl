@@ -8,4 +8,4 @@ use Benchmark_Parser;
 use RDF::Trine::Parser;
 
 benchmark_parser(RDF::Trine::Parser->new('turtle'),
-                 'category_labels_en.ttl');
+                 'category_labels_en.ttl', @ARGV);
