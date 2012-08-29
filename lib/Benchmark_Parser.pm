@@ -33,7 +33,8 @@ sub benchmark_parser {
   my $result = timeit(1, sub {
     try {
       $parser->parse_file(undef, $file, sub {
-        print ++$total, "\n";
+        my @nodes = shift->nodes;
+        print $total, ": @nodes", "\n" unless ++$total % 1000;
         throw Error::Simple if $limit and $total >= $limit;
       });
     }
